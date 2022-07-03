@@ -4,6 +4,7 @@ SendMode Input  ; Recommended for new scripts due to its superior speed and reli
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 #Persistent
 #NoTrayIcon
+#SingleInstance Force
 ;@Ahk2Exe-ExeName SpotTheBlockInstaller
 Global 7z := "C:\Program Files\7-Zip\7z.exe"
 Global DefaultSpotifyPath := A_AppData "\Spotify"
@@ -70,30 +71,13 @@ if A_IsCompiled
 
 	IfNotExist, %A_Startup%\SpotTheBlock.lnk
 	{
-		msgbox, 4132, SpotTheBlock, SpotTheBlock is not set up to launch at login, press yes to make a scheduled task.
+		msgbox, 4132, SpotTheBlock, SpotTheBlock is not set up to launch at login, press yes to make it run at startup.
 		IfMsgBox Yes
 		{
 			FileCreateShortcut, %DefaultSpotifyPath%\SpotTheBlock.exe, %A_Startup%\SpotTheBlock.lnk, %DefaultSpotifyPath%
-			;Run *RunAs schtasks.exe /Create /SC onlogon /TN SpotTheBlock /TR "%ScriptQuotes%" /F,, hide
 		}
 	}
 
-	;ScriptQuotes := A_ScriptFullPath
-	;ScriptQuotes = \"%ScriptQuotes%\"
-	;FileAppend, @echo off `n`nFOR /F `"tokens=* USEBACKQ`" `%`%F IN (``schtasks /query /tn SpotTheBlock /fo csv``) DO ( `nSET var=`%`%F `n) `nIF NOT DEFINED var ( `n    echo notask > notask `n) , taskgen.bat
-	;sleep 750
-	;run, %comspec% /c taskgen.bat,,hide
-	;sleep 750
-	;FileDelete, taskgen.bat
-	;IfExist, notask
-	;	{
-	;		msgbox, 4132, SpotTheBlock, SpotTheBlock is not set up to launch at login, press yes to make a scheduled task.
-	;		IfMsgBox Yes
-	;		{
-	;			Run *RunAs schtasks.exe /Create /SC onlogon /TN SpotTheBlock /TR "%ScriptQuotes%" /F,, hide
-	;		}
-	;		FileDelete, notask
-	;	}
 	
 	
 }
@@ -129,8 +113,8 @@ If FileExist("chrome_elf_bak.dll")
 }
 SetTimer, CheckForUpdate, 21600000
 
-Goto StartChecker
-
+;Goto StartChecker
+SetTimer, CheckState, 1000
 
 
 
@@ -332,11 +316,15 @@ ReadFromResponse(KeyName)
 }
 
 
-URLDownloadToVar(url){
-	hObject:=ComObjCreate("WinHttp.WinHttpRequest.5.1")
-	hObject.Open("GET",url)
-	hObject.Send()
-	result := hObject.ResponseText
-	ObjRelease(hObject)
+URLDownloadToVar(url)
+{
+	try
+	{
+		hObject:=ComObjCreate("WinHttp.WinHttpRequest.5.1")
+		hObject.Open("GET",url)
+		hObject.Send()
+		result := hObject.ResponseText
+		ObjRelease(hObject)
+	}
 	return result
 }
