@@ -22,7 +22,7 @@ Companion daemon to [BlockTheSpot](https://github.com/mrpond/BlockTheSpot): a Sp
 ## Installation
 
 - Download AHK from above and Install it.
-- [Download the latest SpotTheBlock zip](https://github.com/Ae3NerdGod/SpotTheBlock/archive/refs/heads/main.zip) 
+- [Download the latest SpotTheBlock zip](https://github.com/ArchemedIan/SpotTheBlock/archive/refs/heads/main.zip) 
 - Extract anywhere
 - Compile SpotTheBlockInstaller.ahk (Right-click > Compile)
 - Run it from anywhere to start the install process
